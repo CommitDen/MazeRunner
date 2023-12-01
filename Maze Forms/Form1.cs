@@ -48,7 +48,7 @@ namespace Maze_Forms
 
         private void button_Run_Click(object sender, EventArgs e)
         {
-            DrawMaze();
+            GenerateMaze();
         }
 
         private void DrawMaze()
@@ -88,75 +88,87 @@ namespace Maze_Forms
         private void GenerateMaze()
         {
             // Initialize maze with borders
-            maze = new int[mazeSize + 2, mazeSize + 2];
+            maze = new int[mazeSize * 2 + 1, mazeSize * 2 + 1];
 
             // Fill the maze with walls
-            for (int i = 0; i < mazeSize + 2; i++)
+            for (int i = 0; i < mazeSize * 2 + 1; i++)
             {
-                for (int j = 0; j < mazeSize + 2; j++)
+                for (int j = 0; j < mazeSize * 2 + 1; j++)
                 {
                     maze[i, j] = 1;
                 }
             }
 
             // Create openings on the edges (no border)
-            for (int i = 1; i <= mazeSize; i++)
+            for (int i = 0; i < mazeSize * 2 + 1; i++)
             {
                 maze[i, 0] = 0;
-                maze[i, mazeSize + 1] = 0;
+                maze[i, mazeSize * 2] = 0;
                 maze[0, i] = 0;
-                maze[mazeSize + 1, i] = 0;
+                maze[mazeSize * 2, i] = 0;
             }
 
-            // Generate a solvable maze starting from the center
-            GenerateMazeRecursive(mazeSize / 2, mazeSize / 2);
+            // Generate a solvable maze using randomized Prim's algorithm
+            GenerateMazePrim();
 
             // Draw the maze
             DrawMaze();
         }
 
-        private void GenerateMazeRecursive(int x, int y)
-        {
-            // Shuffle the directions (N, E, S, W)
-            int[] directions = { 0, 1, 2, 3 };
-            Shuffle(directions);
-
-            foreach (int direction in directions)
-            {
-                int nx = x + dx[direction];
-                int ny = y + dy[direction];
-
-                if (IsInside(nx, ny) && maze[nx, ny] == 1)
-                {
-                    // Carve a passage
-                    maze[x + dx[direction] * 2, y + dy[direction] * 2] = 0;
-                    maze[nx, ny] = 0;
-
-                    // Recur
-                    GenerateMazeRecursive(nx, ny);
-                }
-            }
-        }
-
-        private bool IsInside(int x, int y)
-        {
-            return x > 0 && x <= mazeSize && y > 0 && y <= mazeSize;
-        }
-
-        private void Shuffle<T>(T[] array)
+        private void GenerateMazePrim()
         {
             Random random = new Random();
-            int n = array.Length;
-            for (int i = n - 1; i > 0; i--)
+            List<Tuple<int, int>> walls = new List<Tuple<int, int>>();
+
+            // Initialize cells
+            for (int i = 2; i < mazeSize * 2; i += 2)
             {
-                int j = random.Next(0, i + 1);
-                T temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
+                for (int j = 2; j < mazeSize * 2; j += 2)
+                {
+                    maze[i, j] = 0;
+                    walls.Add(new Tuple<int, int>(i, j + 1));
+                    walls.Add(new Tuple<int, int>(i + 1, j));
+                }
             }
+
+            while (walls.Count > 0)
+            {
+                // Randomly choose a wall
+                int index = random.Next(walls.Count);
+                var wall = walls[index];
+                walls.RemoveAt(index);
+
+                int x = wall.Item1;
+                int y = wall.Item2;
+
+                // If exactly one of the neighboring cells is visited
+                if (IsValid(x - 2, y) && IsValid(x + 2, y) && IsValid(x, y - 2) && IsValid(x, y + 2))
+                {
+                    if ((maze[x - 2, y] == 0 && maze[x + 2, y] == 1 && maze[x, y - 2] == 1 && maze[x, y + 2] == 1) ||
+                        (maze[x - 2, y] == 1 && maze[x + 2, y] == 0 && maze[x, y - 2] == 1 && maze[x, y + 2] == 1) ||
+                        (maze[x - 2, y] == 1 && maze[x + 2, y] == 1 && maze[x, y - 2] == 0 && maze[x, y + 2] == 1) ||
+                        (maze[x - 2, y] == 1 && maze[x + 2, y] == 1 && maze[x, y - 2] == 1 && maze[x, y + 2] == 0))
+                    {
+                        // Carve a passage
+                        maze[x, y] = 0;
+                        maze[x - (x % 2), y - (y % 2)] = 0;
+
+                        // Add neighboring walls
+                        if (IsValid(x - 2, y)) walls.Add(new Tuple<int, int>(x - 2, y));
+                        if (IsValid(x + 2, y)) walls.Add(new Tuple<int, int>(x + 2, y));
+                        if (IsValid(x, y - 2)) walls.Add(new Tuple<int, int>(x, y - 2));
+                        if (IsValid(x, y + 2)) walls.Add(new Tuple<int, int>(x, y + 2));
+                    }
+                }
+            }
+
+            
         }
 
-        private readonly int[] dx = { 0, 1, 0, -1 }; // Directions (N, E, S, W)
-        private readonly int[] dy = { -1, 0, 1, 0 };
+
+        private bool IsValid(int x, int y)
+        {
+            return x >= 0 && x < mazeSize * 2 + 1 && y >= 0 && y < mazeSize * 2 + 1;
+        }
     }
 }
