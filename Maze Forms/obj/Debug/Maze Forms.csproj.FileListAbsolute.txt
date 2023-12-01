@@ -1,0 +1,11 @@
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\bin\Debug\Maze Forms.exe.config
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\bin\Debug\Maze Forms.exe
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\bin\Debug\Maze Forms.pdb
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze Forms.csproj.AssemblyReference.cache
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze_Forms.Form1.resources
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze_Forms.Properties.Resources.resources
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze_Forms.Views.MenuView.resources
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze Forms.csproj.GenerateResource.cache
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze Forms.csproj.CoreCompileInputs.cache
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze Forms.exe
+C:\Users\Deni\source\repos\Maze Forms\Maze Forms\obj\Debug\Maze Forms.pdb
