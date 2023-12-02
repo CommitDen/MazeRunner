@@ -63,6 +63,7 @@ namespace Maze_Forms
                     for (int j = 0; j < maze.GetLength(1); j++)
                     {
                         Brush brush = maze[i, j] == 1 ? Brushes.Black : Brushes.White;
+                        brush = maze[i, j] == 2 ? Brushes.Green : brush;
                         g.FillRectangle(brush, j * cellSize, i * cellSize, cellSize, cellSize);
                     }
                 }
@@ -162,9 +163,28 @@ namespace Maze_Forms
                 }
             }
 
-            
+            // Generate the goal area within the maze
+            GenerateMazeWithGoal();
         }
 
+        private void GenerateMazeWithGoal()
+        {
+            // Set the size of the goal area (2x2 for even mazeSize, 3x3 for odd mazeSize)
+            int goalSize = mazeSize % 2 == 0 ? 2 : 3;
+
+            // Calculate the starting position for the goal area in the center of the maze
+            int goalStartX = mazeSize - goalSize + 2; //+2 to accomodate for walls
+            int goalStartY = mazeSize - goalSize + 2; 
+
+            // Set the goal area in the center of the maze
+            for (int i = goalStartX; i < goalStartX + goalSize; i++)
+            {
+                for (int j = goalStartY; j < goalStartY + goalSize; j++)
+                {
+                    maze[i, j] = 2; // 0 for open space in the goal area
+                }
+            }
+        }
 
         private bool IsValid(int x, int y)
         {
